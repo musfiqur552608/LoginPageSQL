@@ -1,6 +1,8 @@
 package com.example.loginwithsql;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
@@ -50,5 +52,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }catch (Exception e){
             Toast.makeText(context, "Exception : "+e, Toast.LENGTH_LONG).show();
         }
+    }
+    public long insertData(UserDetails userDetails) {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(NAME,userDetails.getName());
+        contentValues.put(EMAIL,userDetails.getEmail());
+        contentValues.put(USERNAME,userDetails.getUsername());
+        contentValues.put(PASSWORD,userDetails.getPassword());
+
+        long rowId = sqLiteDatabase.insert(TABLE_NAME,null,contentValues);
+
+        return rowId;
+    }
+
+    public Boolean findPassword(String uname, String pass){
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM "+TABLE_NAME,null);
+        Boolean result = false;
+
+        if(cursor.getCount() == 0)
+        {
+            Toast.makeText(context, "No data is found", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            while (cursor.moveToNext())
+            {
+                String username = cursor.getString(3);
+                String password = cursor.getString(4);
+
+                if(username.equals(uname) && password.equals(pass)){
+                    result = true;
+                    break;
+                }
+            }
+        }
+        return  result;
     }
 }

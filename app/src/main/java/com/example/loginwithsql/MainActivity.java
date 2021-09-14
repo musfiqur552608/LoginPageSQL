@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +35,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String uname = username.getText().toString();
                 String password = pass.getText().toString();
+
+                Boolean result = databaseHelper.findPassword(uname,password);
+
+                if(result==true){
+                    Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getApplicationContext(), "username and password didn't match", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
